@@ -4,11 +4,14 @@ var app = express.createServer(express.logger());
 
 app.get('/', function(request, response) {
   fs.readFileSync("index.html", function(err, data) {
-    if(err) throw err;
-    var buffer = new Buffer(1024);
-    buffer.write(data,"utf-8");
-    response.send(buffer.toString("utf-8");
-  }
+    if(!err) {
+      var buffer = new Buffer(1024);
+      buffer.write(data,"utf-8");
+      response.send(buffer.toString("utf-8"));
+    } else {
+      response.send("Cannot read index.html.");
+    }
+  });
   //response.send('Hello World 2!');
 });
 
