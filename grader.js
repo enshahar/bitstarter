@@ -37,7 +37,7 @@ var loadURLtoTmpFile = function(url) {
           process.exit(1);
         } else {
           //console.log("data: "+result);
-          fs.writeFileSync(htmlTmpFileName); 
+          fs.writeFileSync(htmlTmpFileName, result); 
           var checkJson = checkHtmlFile(htmlTmpFileName, program.checks);
           var outJson = JSON.stringify(checkJson, null, 4);
           console.log(outJson);
@@ -49,7 +49,7 @@ var loadURLtoTmpFile = function(url) {
 var assertFileExists = function(infile) {
     var instr = infile.toString();
     if(!fs.existsSync(instr)) {
-        console.log("%s does not exist. Exiting.", instr);
+        //console.log("%s does not exist. Exiting.", instr);
         process.exit(1); // http://nodejs.org/api/process.html#process_process_exit_code
     }
     return instr;
@@ -64,6 +64,7 @@ var loadChecks = function(checksfile) {
 };
 
 var checkHtmlFile = function(htmlfile, checksfile) {
+    //console.log("checkHtmlFile: " + htmlfile);
     $ = cheerioHtmlFile(htmlfile);
     var checks = loadChecks(checksfile).sort();
     var out = {};
@@ -86,7 +87,10 @@ if(require.main == module) {
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
         .option('-u, --url <url>', 'url to html', clone(loadURLtoTmpFile))
         .parse(process.argv);
-    if(!program.url) {
+    //console.log("program.url = " + program.url);
+    //console.log("program.file = " + program.file);
+    if(typeof(program.url) === "undefined") {
+      //console.log("url is not defined.");
       var checkJson = checkHtmlFile(program.file, program.checks);
       var outJson = JSON.stringify(checkJson, null, 4);
       console.log(outJson);
